@@ -6,7 +6,7 @@
           makeAR
         </h1>
         <p class="subtitle is-5">
-          ARマーカーを作ろう
+          ARマーカーがでるよ
         </p>
       </div>
     </section>  
@@ -14,53 +14,41 @@
       <div class="container">
         <div class="columns">
           <div class="column">
-            <b-field label="図形タイプ">
-              <b-tabs type="is-toggle">
-                <b-tab-item label="丸・円" icon="circle" />
-                <b-tab-item label="四角形" icon="square" />
-                <b-tab-item label="いろいろ" icon="shape" />
-              </b-tabs>
-            </b-field>
-            <b-field label="マーカータイプ">
-              <div class="block">
-                <b-radio 
-                  v-model="markerStatus.markerStyleType"
-                  native-value="random"
-                >
-                  ランダム
-                </b-radio>
-                <b-radio 
-                  v-model="markerStatus.markerStyleType"
-                  native-value="straight"
-                >
-                  整列された
-                </b-radio>
-              </div>
-            </b-field>
-            <button 
-              class="button"
-            >
-              つくる
-            </button>
+            <div id="p5Canvas" ref="canvas" />
           </div>
-          <div class="column" />
         </div>
+        <a download class="button" ref="download" @click="storePicture">
+          保存する
+        </a>
+        <a href="/" class="button">リロード</a>
       </div>
     </section>
-    
     <section class="section" />
   </div>
 </template>
 
 <script>
+import P5 from 'p5'
+import * as circleMarker from '../p5/circleMarker'
 export default {
   data() {
     return {
+      marker: null,
       markerStatus: {
         markeramounts: 0,
         markerShapeType: '',
         markerStyleType: ''
       }
+    }
+  },
+  mounted() {
+    this.marker = new P5(circleMarker.setup)
+  },
+  methods: {
+    storePicture() {
+      const canvas = this.$refs.canvas.childNodes[0]
+      const picture = canvas.toDataURL('image/jpeg')
+      this.$refs.download.href = picture
     }
   }
 }
